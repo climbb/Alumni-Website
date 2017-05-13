@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LocalStorage</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script>
+		var addEvent = (function () {
+			if (document.addEventListener) {
+				return function (el, type, fn) {
+					if (el && el.nodeName || el === window) {
+						el.addEventListener(type, fn, false);
+					} else if (el && el.length) {
+						for (var i = 0; i < el.length; i++) {
+							addEvent(el[i], type, fn);
+						}
+					}
+				};
+			} else {
+				return function (el, type, fn) {
+					if (el && el.nodeName || el === window) {
+						el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
+					} else if (el && el.length) {
+						for (var i = 0; i < el.length; i++) {
+							addEvent(el[i], type, fn);
+						}
+					}
+				};
+			}
+		})();
+	
+	</script>
+    <script>
+$(document).ready(function() {
+    $('#save_editable').click(function() {
+        var content = $('#editable').html();
+        $.ajax({
+            url: 'saveToDb.php',
+            type: 'POST',
+            data: {
+                content: content
+            }
+        });
+    });
+});
+</script>
+<script>
+	var content = $('#editable').html();
+	$.ajax({
+		url: 'saveToDb.php',
+		type: 'POST',
+		data: {
+			content: content
+		}
+	});
+	</script>
+
+</head>
+<body>
+	<div id="editable" contentEditable="true"><div id="editor" contenteditable="true">
+      gregerg&nbsp;<div><dt style="margin-bottom: 0.1em; color: rgb(0, 0, 0); font-family: sans-serif; font-size: 14.545454025268555px; line-height: 22.073863983154297px;">南 夏奈<span style="font-weight: normal;">（<span lang="ja" xml:lang="ja">南 夏奈（みなみ かな）</span>，配音員：<a href="http://zh.wikipedia.org/wiki/%E4%BA%95%E4%B8%8A%E9%BA%BB%E9%87%8C%E5%A5%88" title="井上麻里奈" style="color: rgb(11, 0, 128); background-image: none;">井上麻里奈</a>）</span></dt><dd style="line-height: 22.073863983154297px; margin-left: 1.6em; margin-bottom: 0.1em; margin-right: 0px; color: rgb(0, 0, 0); font-family: sans-serif; font-size: 14.545454025268555px;">南家的二姐，中學二年級學生。本作第一主角，故事的主要推進者。她是三姊妹中最有活力的一個，具有表演天賦，部分行為想法比妹妹千秋還要單純幼稚，被千秋稱為「愚蠢傢伙」（<span lang="ja" xml:lang="ja">馬鹿野郎</span>），但有時卻是「天才謀略家」，隨時隨地都能插科打諢，使日常生活充滿了樂趣。常以戲弄他人為樂，特別是班內鄰座的景子，但偶爾也會表現出可愛的一面。她與姐姐和妹妹的同學都有來往，身邊總能聚集起一群人。對食物有超強的執著，但自己的烹調水平卻很差，最喜愛的食物是檸檬乳酪軟凍奶油派。喜歡睡懶覺，經常因此而錯過早飯。喜歡游泳，很怕暈車。雖然同班同學藤岡已明確向她表白了自己的心意，但因為千秋的誤導，被夏奈誤以為是敵意的表示，現在只視其為一位玩得來的朋友。似乎有能作預知夢的能力，不過僅限於隔天的晚飯。曾以「夏奈軍團」名義，繼藤岡之後就任第五代番長，但隨著軍團旋即解散而自行取消。把考試65分的分數認為是溫暖人間的分數。</dd><dd style="line-height: 22.073863983154297px; margin-left: 1.6em; margin-bottom: 0.1em; margin-right: 0px; color: rgb(0, 0, 0); font-family: sans-serif; font-size: 14.545454025268555px;"><br></dd></div></div></div>
+    <a id="save_editable">Save</a>
+    <input type="button" value="Save" name="save" onclick="$.ajax">
+
+	<script>
+		var editable = document.getElementById('editable');
+		
+		addEvent(editable, 'blur', function () {
+		  // lame that we're hooking the blur event
+		  localStorage.setItem('contenteditable', this.innerHTML);
+		  document.designMode = 'off';
+		});
+		
+		addEvent(editable, 'focus', function () {
+		  document.designMode = 'on';
+		});
+		
+		addEvent(document.getElementById('clear'), 'click', function () {
+		  localStorage.clear();
+		  window.location = window.location; // refresh
+		});
+		
+		if (localStorage.getItem('contenteditable')) {
+		  editable.innerHTML = localStorage.getItem('contenteditable');
+		}
+	</script>
+
+</body>
+</html>
